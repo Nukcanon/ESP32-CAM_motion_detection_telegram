@@ -8,7 +8,7 @@
     {
       "chipFamily": "ESP32",
       "parts": [
-        { "path": "../ESP32-CAM_motion_detection_telegram_firmware.bin", "offset": 0 },
+        { "path": "./ESP32-CAM_motion_detection_telegram_firmware.bin", "offset": 0 },
       ]
     }
   ]
