@@ -113,6 +113,12 @@ int get_NTP() {
   }
 }
 
+
+
+//------------------------------------------1번 절취선---------------------------------------------------
+
+
+
 // ROM에 저장될 내용의 구조체
 struct eprom_data {
   char devname[16];
@@ -257,6 +263,13 @@ int getNextBufferLen() {
   }
 }
 
+
+
+//------------------------------------------2번 절취선---------------------------------------------------
+
+
+
+
 // Telegram으로 사진 전송 함수
 void sendPhotoTelegram() {
   if (flashState == true){
@@ -396,7 +409,13 @@ void Loop_Task(void *pvParameters) {
   }
   vTaskDelete(NULL);
 }
-  
+
+
+
+//------------------------------------------3번 절취선---------------------------------------------------
+
+
+
 void setup() {
   Serial.begin(115200);
   Serial.print("* setup() is running on core ");
