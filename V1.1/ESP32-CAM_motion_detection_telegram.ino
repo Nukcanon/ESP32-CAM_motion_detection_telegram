@@ -373,6 +373,12 @@ void Interrupt_Task(void *pvParameters) {
   vTaskDelete(NULL);
 }
 
+
+
+//------------------------------------------3번 절취선---------------------------------------------------
+
+
+
 // 1번 CPU에 작업 할당
 void Loop_Task(void *pvParameters) {
   Serial.print("* Loop_Task() is running on core ");
@@ -409,12 +415,6 @@ void Loop_Task(void *pvParameters) {
   }
   vTaskDelete(NULL);
 }
-
-
-
-//------------------------------------------3번 절취선---------------------------------------------------
-
-
 
 void setup() {
   Serial.begin(115200);
