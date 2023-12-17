@@ -28,7 +28,8 @@ char def_chat_id[50];
 char devname[30];
 String chat_id;
 String BOTtoken;
-String devstr =  "ESP32-CAM";
+String randomNum = String(esp_random());
+String devstr =  "ESP32-"+randomNum.substring(0,4);
 
 // 상태 확인 위한 임시 변수
 int CheckNumber = 18;
@@ -107,17 +108,13 @@ int get_NTP() {
     return 0;
   }
   else{
-    Serial.print("success check present time: ");
+    Serial.print("Success check present time: ");
     printLocalTime();
     return 1;
   }
 }
 
-
-
 //------------------------------------------1번 절취선---------------------------------------------------
-
-
 
 // ROM에 저장될 내용의 구조체
 struct eprom_data {
@@ -134,7 +131,7 @@ void do_eprom_write() {
   devstr.toCharArray(ed.devname, 12); 
   BOTtoken.toCharArray(ed.BOTtoken, 50);
   chat_id.toCharArray(ed.chat_id, 12);
-  Serial.println("Writing to EPROM ...");
+//  Serial.println("Writing to EPROM ...");
   EEPROM.begin(200);
   EEPROM.put(0, ed);
   EEPROM.commit();
@@ -148,21 +145,21 @@ void do_eprom_read() {
   EEPROM.get(0, ed);
 
   if (ed.eprom_good == CheckNumber) {
-    Serial.println("Good settings in the EPROM ");
+//    Serial.println("Good settings in the EPROM ");
     devstr = ed.devname;
     devstr.toCharArray(devname, 12);
     //devstr.length() + 1);
     BOTtoken = ed.BOTtoken;
     bot.updateToken(BOTtoken);
     chat_id = ed.chat_id;
-    Serial.println(devstr);
-    Serial.println(BOTtoken);
-    Serial.println(chat_id);
+//    Serial.println(devstr);
+//    Serial.println(BOTtoken);
+//    Serial.println(chat_id);
   } 
   else {
-    Serial.println("No settings in EPROM ");
-    chat_id = "1234567890";  //더미 데이터 저장
-    BOTtoken = "123456789:12345678901234567890123456789012345";  //더미 데이터 저장
+//    Serial.println("No settings in EPROM ");
+    chat_id = "";  //더미 데이터 저장
+    BOTtoken = "";  //더미 데이터 저장
     do_eprom_write();
     wm.resetSettings();
   }
@@ -173,16 +170,16 @@ void saveParamCallback() {
   if (wm.server->hasArg("DevName")) {
     String sDevName  = wm.server->arg("DevName");
     devstr = sDevName;
-    Serial.println(sDevName);
+//    Serial.println(sDevName);
   }
   if (wm.server->hasArg("chat_id")) {
     String schat_id  = wm.server->arg("chat_id");
-    Serial.println(schat_id);
+//    Serial.println(schat_id);
     chat_id = schat_id;
   }
   if (wm.server->hasArg("BOTtoken")) {
     String sBOTtoken  = wm.server->arg("BOTtoken");
-    Serial.println(sBOTtoken);
+//    Serial.println(sBOTtoken);
     BOTtoken = sBOTtoken;
     bot.updateToken(BOTtoken);
   }
@@ -227,8 +224,8 @@ bool init_wifi() {
     ESP.restart();
   }
 
-  Serial.println("");
-  Serial.println("WiFi connected");
+//  Serial.println("");
+//  Serial.println("WiFi connected");
   return true;
 }
 
@@ -263,12 +260,7 @@ int getNextBufferLen() {
   }
 }
 
-
-
 //------------------------------------------2번 절취선---------------------------------------------------
-
-
-
 
 // Telegram으로 사진 전송 함수
 void sendPhotoTelegram() {
@@ -364,8 +356,8 @@ esp_err_t err = NULL;
 
 // 0번 CPU에 인터럽트 할당
 void Interrupt_Task(void *pvParameters) {
-  Serial.print("* Interrupt_Task() is running on core ");
-  Serial.println(xPortGetCoreID());
+//  Serial.print("* Interrupt_Task() is running on core ");
+//  Serial.println(xPortGetCoreID());
   attachInterrupt(PIR_pin, detectsMovement, CHANGE);
   while(true){
     vTaskDelay(500);
@@ -373,16 +365,12 @@ void Interrupt_Task(void *pvParameters) {
   vTaskDelete(NULL);
 }
 
-
-
 //------------------------------------------3번 절취선---------------------------------------------------
-
-
 
 // 1번 CPU에 작업 할당
 void Loop_Task(void *pvParameters) {
-  Serial.print("* Loop_Task() is running on core ");
-  Serial.println(xPortGetCoreID());
+//  Serial.print("* Loop_Task() is running on core ");
+//  Serial.println(xPortGetCoreID());
   while(true){
     // 시간 동기화 실패시 재실행
     currentMillis = millis();
@@ -415,11 +403,11 @@ void Loop_Task(void *pvParameters) {
   }
   vTaskDelete(NULL);
 }
-
+  
 void setup() {
   Serial.begin(115200);
-  Serial.print("* setup() is running on core ");
-  Serial.println(xPortGetCoreID());
+//  Serial.print("* setup() is running on core ");
+//  Serial.println(xPortGetCoreID());
 
   // brownout detector(저전압 감지 기능) 비활성화 "soc/soc.h", "soc/rtc_cntl_reg.h"에 정의
   WRITE_PERI_REG(RTC_CNTL_BROWN_OUT_REG, 0); 
@@ -431,6 +419,10 @@ void setup() {
 
   //WiFi 시작
   init_wifi();
+  Serial.print("Device Name is ");
+  Serial.println(devstr);
+  Serial.print("Please connect to ");
+  Serial.println(devstr);
   
   // Telegram 연결 인증 설정
   clientTCP.setCACert(TELEGRAM_CERTIFICATE_ROOT); 
