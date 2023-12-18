@@ -419,10 +419,6 @@ void setup() {
 
   //WiFi 시작
   init_wifi();
-  Serial.print("Device Name is ");
-  Serial.println(devstr);
-  Serial.print("Please connect to ");
-  Serial.println(devstr);
   
   // Telegram 연결 인증 설정
   clientTCP.setCACert(TELEGRAM_CERTIFICATE_ROOT); 
